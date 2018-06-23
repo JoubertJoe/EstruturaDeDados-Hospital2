@@ -22,6 +22,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.FlowLayout;
 import java.awt.CardLayout;
 import java.awt.Window.Type;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.Dimension;
 import java.awt.Color;
 import javax.swing.UIManager;
@@ -72,6 +74,7 @@ public class ProntoSocorro extends JFrame {
 		contentPane.add(tabbedPane, BorderLayout.CENTER);
 		componentesVisaoGeral(estrutura);
 		componentesEntradaMedicos(estrutura);
+		criaAcoes(estrutura);
 
 		this.setVisible(true);
 	}
@@ -206,5 +209,16 @@ public class ProntoSocorro extends JFrame {
 		tblMedicos.setPreferredScrollableViewportSize(new Dimension(200, 200));
 		tblMedicos.setFillsViewportHeight(true);
 
+	}
+	
+	void criaAcoes(Estruturas estruturas) {
+		btnVoltar.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				Launcher launcher = new Launcher(estruturas);
+			}
+		});
 	}
 }

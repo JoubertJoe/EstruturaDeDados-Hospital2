@@ -61,6 +61,8 @@ public class JanelaAdministracao extends JFrame {
 	private JRadioButton rdbtnAzul, rdbtnAmarelo, rdbtnVerde, rdbtnVermelho;
 	private final ButtonGroup btgPrioridade = new ButtonGroup();
 	private JRadioButton rdbtnLaranja;
+	private JPanel pnlVoltar;
+	private JButton btnVoltar;
 
 	public JanelaAdministracao(Estruturas estruturas) {
 		setTitle("Give me Blood!");
@@ -115,6 +117,18 @@ public class JanelaAdministracao extends JFrame {
 			}
 
 		});
+
+		btnVoltar.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+				Launcher launcher = new Launcher(estruturas);
+				JanelaAdministracao.this.dispose();
+			}
+		});
+
 	}
 
 	void componentesAbaCadMedico() {
@@ -185,8 +199,8 @@ public class JanelaAdministracao extends JFrame {
 		panelCadastroMedicos.add(lblGnero, gbc_lblGnero);
 
 		comboGeneroMedico = new JComboBox<String>();
-		comboGeneroMedico.setModel(
-				new DefaultComboBoxModel<String>(new String[] { "Masculino", "Feminino", "Transgênero", "Não definido" }));
+		comboGeneroMedico.setModel(new DefaultComboBoxModel<String>(
+				new String[] { "Masculino", "Feminino", "Transgênero", "Não definido" }));
 		comboGeneroMedico.setMaximumRowCount(20);
 		gbc_comboGeneroMedico = new GridBagConstraints();
 		gbc_comboGeneroMedico.gridwidth = 3;
@@ -242,6 +256,12 @@ public class JanelaAdministracao extends JFrame {
 		gbc_btnCadastrarMdico.gridx = 1;
 		gbc_btnCadastrarMdico.gridy = 5;
 		panelCadastroMedicos.add(btnCadastrarMdico, gbc_btnCadastrarMdico);
+
+		pnlVoltar = new JPanel();
+		contentPane.add(pnlVoltar, BorderLayout.SOUTH);
+
+		btnVoltar = new JButton("VOLTAR");
+		pnlVoltar.add(btnVoltar);
 
 	}
 
