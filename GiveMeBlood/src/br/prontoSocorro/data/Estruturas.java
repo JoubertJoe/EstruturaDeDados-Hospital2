@@ -20,78 +20,16 @@ public class Estruturas {
 	private Queue<Medico> medicoAtendendo = new LinkedList<Medico>();
 	private LinkedList<String[]> listaDeAtendimento = new LinkedList<String[]>();
 
-	public LinkedList<Paciente> getCadastroPacientes() {
-		return listaPacientes;
+	public void addCadastraMedico(Medico novoMedico) {
+		listaDeMedicos.add(novoMedico);
 	}
 
 	public void addCadPaciente(Paciente novoPaciente) {
 		listaPacientes.add(novoPaciente);
 	}
 
-	public Paciente verificaCadPaciente() {
-		// Mostra o Próximo Paciente da fila
-		return listaPacientes.peek();
-	}
-
-	public Paciente verificaCadPaciente(int id) {
-		// Mostra o Próximo Paciente da fila
-		return listaPacientes.get(id);
-	}
-
-	public Paciente chamaCadPaciente() {
-		// Mostra o próximo paciente da fila, e o retira da fila.
-		return listaPacientes.poll();
-	}
-
-	public PriorityQueue<Paciente> getFilaPaciente() {
-		return filaPaciente;
-	}
-
 	public void addPaciente(Paciente novoPaciente) {
 		filaPaciente.add(novoPaciente);
-	}
-
-	public Paciente verificaPaciente() {
-		// Mostra o Próximo Paciente da fila
-		return filaPaciente.peek();
-	}
-
-	public Paciente chamaPaciente() {
-		// Mostra o próximo paciente da fila, e o retira da fila.
-		return filaPaciente.poll();
-	}
-
-	public Medico medico(int index) {
-		// Mostra um médico
-		return listaDeMedicos.get(index);
-	}
-
-	public LinkedList<Medico> getMedicos() {
-		return listaDeMedicos;
-	}
-
-	public Medico verificaMedico(int id) {
-		return listaDeMedicos.get(id);
-	}
-
-	public void addCadastraMedico(Medico novoMedico) {
-		listaDeMedicos.add(novoMedico);
-	}
-
-	public Queue<Medico> getMedico() {
-		return medicoAtendendo;
-	}
-
-	public void entrouMedico(Medico medicoEntrada) {
-		medicoAtendendo.add(medicoEntrada);
-	}
-
-	public Medico saiuMedico() {
-		return medicoAtendendo.poll();
-	}
-
-	public LinkedList<String[]> getAtendimento() {
-		return listaDeAtendimento;
 	}
 
 	public String[] atendendo(int index) {
@@ -106,31 +44,43 @@ public class Estruturas {
 
 	}
 
-	public String[] finalizaAtendimento(int id) {
-		return listaDeAtendimento.remove(id);
+	public Paciente chamaCadPaciente() {
+		// Mostra o próximo paciente da fila, e o retira da fila.
+		return listaPacientes.poll();
+	}
+
+	public Paciente chamaPaciente() {
+		// Mostra o próximo paciente da fila, e o retira da fila.
+		return filaPaciente.poll();
+	}
+
+	public void entrouMedico(Medico medicoEntrada) {
+		medicoAtendendo.add(medicoEntrada);
 	}
 
 	public String[] finalizaAtendimento() {
 		return listaDeAtendimento.remove();
 	}
 
-	public void salvar() throws FileNotFoundException {
-		PrintWriter pw = new PrintWriter(new FileOutputStream("data/medicos.gb"));
-		for (int i = 0; i < listaDeMedicos.size(); i++) {
-			String tmp = listaDeMedicos.get(i).toString() + "\n";
-			pw.write(tmp);
-		}
-		pw.close();
-
-		pw = new PrintWriter(new FileOutputStream("data/pacientes.gb"));
-		for (int i = 0; i < listaPacientes.size(); i++) {
-			String tmp = listaPacientes.get(i).toString() + "\n";
-			pw.write(tmp);
-		}
-		pw.close();
-
+	public String[] finalizaAtendimento(int id) {
+		return listaDeAtendimento.remove(id);
 	}
 
+	public LinkedList<String[]> getAtendimento() {
+		return listaDeAtendimento;
+	}
+
+	public LinkedList<Paciente> getCadastroPacientes() {
+		return listaPacientes;
+	}
+
+	public PriorityQueue<Paciente> getFilaPaciente() {
+		return filaPaciente;
+	}
+
+	public Paciente getPacienteFila() {
+		return filaPaciente.peek();
+	}
 	int getIPrioridade(String prioridade) {
 		if (prioridade.equalsIgnoreCase("azul")) {
 			return 0;
@@ -145,6 +95,18 @@ public class Estruturas {
 			// if(prioridade.equalsIgnoreCase("vermelho"))
 		}
 
+	}
+
+	public Queue<Medico> getMedico() {
+		return medicoAtendendo;
+	}
+
+	public Medico getMAt() {
+		return medicoAtendendo.peek();
+	}
+	
+	public LinkedList<Medico> getMedicos() {
+		return listaDeMedicos;
 	}
 
 	public void ler() throws Exception {
@@ -182,5 +144,50 @@ public class Estruturas {
 		buf.close();
 		leitor.close();
 
+	}
+
+	public Medico medico(int index) {
+		// Mostra um médico
+		return listaDeMedicos.get(index);
+	}
+
+	public Medico saiuMedico() {
+		return medicoAtendendo.poll();
+	}
+
+	public void salvar() throws FileNotFoundException {
+		PrintWriter pw = new PrintWriter(new FileOutputStream("data/medicos.gb"));
+		for (int i = 0; i < listaDeMedicos.size(); i++) {
+			String tmp = listaDeMedicos.get(i).toString() + "\n";
+			pw.write(tmp);
+		}
+		pw.close();
+
+		pw = new PrintWriter(new FileOutputStream("data/pacientes.gb"));
+		for (int i = 0; i < listaPacientes.size(); i++) {
+			String tmp = listaPacientes.get(i).toString() + "\n";
+			pw.write(tmp);
+		}
+		pw.close();
+
+	}
+
+	public Paciente verificaCadPaciente() {
+		// Mostra o Próximo Paciente da fila
+		return listaPacientes.peek();
+	}
+
+	public Paciente verificaCadPaciente(int id) {
+		// Mostra o Próximo Paciente da fila
+		return listaPacientes.get(id);
+	}
+
+	public Medico verificaMedico(int id) {
+		return listaDeMedicos.get(id);
+	}
+
+	public Paciente verificaPaciente() {
+		// Mostra o Próximo Paciente da fila
+		return filaPaciente.peek();
 	}
 }

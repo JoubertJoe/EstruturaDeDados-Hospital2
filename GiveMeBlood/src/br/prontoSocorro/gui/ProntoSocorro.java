@@ -3,9 +3,15 @@ package br.prontoSocorro.gui;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.List;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.ObjectInputStream.GetField;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedList;
 
 import javax.swing.JFrame;
@@ -39,6 +45,8 @@ import javax.swing.JDesktopPane;
 import javax.swing.JTextField;
 import javax.swing.RowFilter;
 import javax.swing.ImageIcon;
+import javax.swing.SwingConstants;
+import javax.swing.JTextArea;
 
 public class ProntoSocorro extends JFrame {
 
@@ -72,6 +80,12 @@ public class ProntoSocorro extends JFrame {
 	private JButton btnLaranja;
 	private JButton btnVermelho;
 	private TableRowSorter<DefaultTableModel> pesquisaM, pesquisaP;
+	private JPanel pnlRelatorio;
+	private JLabel lblRelatorioImagem;
+	private JPanel pnlBtnRelatorio;
+	private JPanel pnlEsqRelatorio;
+	private JTextArea txtAreaRelatorio;
+	private JButton btnSalvarrelatorio;
 
 	public ProntoSocorro(Estruturas estrutura) {
 		setTitle("GIVE ME BLOOD");
@@ -96,6 +110,7 @@ public class ProntoSocorro extends JFrame {
 		contentPane.add(tabbedPane, BorderLayout.CENTER);
 		componentesVisaoGeral(estrutura);
 		componentesEntradaMedicos(estrutura);
+		componentesRelatorio(estrutura);
 		criaAcoes(estrutura);
 		populaTabelaCadPaciente(estrutura);
 		populaTabelaMedicos(estrutura);
@@ -199,6 +214,35 @@ public class ProntoSocorro extends JFrame {
 
 		btnVermelho = new JButton("Vermelho");
 		pnlPrioridade.add(btnVermelho);
+
+	}
+
+	public void componentesRelatorio(Estruturas estruturas) {
+		pnlRelatorio = new JPanel();
+		tabbedPane.addTab("RELATORIO", null, pnlRelatorio, null);
+		tabbedPane.setBackgroundAt(3, Color.WHITE);
+		tabbedPane.setForegroundAt(3, Color.BLACK);
+		pnlRelatorio.setLayout(new BorderLayout(0, 0));
+
+		lblRelatorioImagem = new JLabel("");
+		lblRelatorioImagem.setHorizontalAlignment(SwingConstants.CENTER);
+		lblRelatorioImagem.setIcon(new ImageIcon("images/logo.png"));
+		pnlRelatorio.add(lblRelatorioImagem, BorderLayout.NORTH);
+
+		pnlBtnRelatorio = new JPanel();
+		pnlRelatorio.add(pnlBtnRelatorio, BorderLayout.SOUTH);
+
+		btnSalvarrelatorio = new JButton("SalvarRelatorio");
+		pnlBtnRelatorio.add(btnSalvarrelatorio);
+
+		pnlEsqRelatorio = new JPanel();
+		pnlEsqRelatorio.setBackground(Color.WHITE);
+		pnlRelatorio.add(pnlEsqRelatorio, BorderLayout.WEST);
+
+		txtAreaRelatorio = new JTextArea();
+		txtAreaRelatorio.setEditable(false);
+		txtAreaRelatorio.setBackground(Color.WHITE);
+		pnlRelatorio.add(txtAreaRelatorio, BorderLayout.CENTER);
 	}
 
 	private void pesquisaTabela(JTextField pesquisa, TableRowSorter<DefaultTableModel> ordenador) {
@@ -302,6 +346,7 @@ public class ProntoSocorro extends JFrame {
 				new String[] { "ID", "Paciente", "Condi\u00E7\u00E3o" });
 
 		tblPacientes = new JTable(modeloPacientes);
+		tblPacientes.setRowSelectionAllowed(false);
 		tblPacientes.setPreferredScrollableViewportSize(new Dimension(200, 200));
 		scrollPacientes.setViewportView(tblPacientes);
 
@@ -322,6 +367,7 @@ public class ProntoSocorro extends JFrame {
 		pnlTabelaAtendimento.add(scrollAtendimento, "name_7529993937869");
 
 		tblAtendimento = new JTable();
+		tblAtendimento.setRowSelectionAllowed(false);
 		tblAtendimento.setFillsViewportHeight(true);
 		tblAtendimento.setPreferredScrollableViewportSize(new Dimension(200, 200));
 		modeloAtendimento = new DefaultTableModel(new Object[][] {}, new String[] { "ID", "Medico", "Paciente" });
@@ -339,6 +385,7 @@ public class ProntoSocorro extends JFrame {
 		modeloMedico = new DefaultTableModel(new Object[][] {},
 				new String[] { "ID", "M\u00E9dico", "Especializa\u00E7\u00E3o" });
 		tblMedicos = new JTable();
+		tblMedicos.setRowSelectionAllowed(false);
 		tblMedicos.setModel(modeloMedico);
 
 		scrollPane.setViewportView(tblMedicos);
@@ -362,6 +409,31 @@ public class ProntoSocorro extends JFrame {
 	}
 
 	void criaAcoes(Estruturas estruturas) {
+
+		btnSalvarrelatorio.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				DateFormat df = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
+
+				Date today = Calendar.getInstance().getTime();
+
+				String data = df.format(today);
+
+				try {
+					FileWriter writer = new FileWriter("relatorios/" + data + ".txt");
+					txtAreaRelatorio.write(writer);
+					writer.close();
+					JOptionPane.showMessageDialog(null, "Relatorio salbo com sucesso em : relatorios/" + data + ".txt");
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					JOptionPane.showMessageDialog(null, "Erro ao salvar relatorio : " + e1);
+				}
+
+			}
+		});
+
 		btnPesquisa.addActionListener(new ActionListener() {
 
 			@Override
@@ -399,11 +471,8 @@ public class ProntoSocorro extends JFrame {
 					if (tblAtendimento.getSelectionModel().isSelectionEmpty()) {
 						estruturas.finalizaAtendimento();
 						populaTabelaAtendimento(estruturas);
-					} else {
-						estruturas.finalizaAtendimento(tblAtendimento.getSelectedRow());
-						populaTabelaAtendimento(estruturas);
-					}
 
+					}
 				}
 
 			}
@@ -415,6 +484,9 @@ public class ProntoSocorro extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 
 				try {
+					txtAreaRelatorio
+							.setText(txtAreaRelatorio.getText() + "\n -------\n" + estruturas.getMAt().toString()
+									+ "\nATENDENDEU\n : " + estruturas.getPacienteFila().toString());
 					estruturas.atenderProximo();
 					populaTabelaEntMed(estruturas);
 					populaTabelaPaciente(estruturas);
