@@ -46,7 +46,7 @@ public class Launcher extends JFrame {
 		});
 
 		JLabel lblLogo = new JLabel("");
-		lblLogo.setIcon(new ImageIcon("/home/joubertjoe/Imagens/Seleção_028.png"));
+		lblLogo.setIcon(new ImageIcon("images/logo.png"));
 		lblLogo.setHorizontalAlignment(SwingConstants.CENTER);
 		contentPane.add(lblLogo);
 

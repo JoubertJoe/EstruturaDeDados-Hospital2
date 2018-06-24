@@ -7,9 +7,15 @@ import br.prontoSocorro.gui.ProntoSocorro;
 
 public class Principal {
 
-	public static void main(String[] args) {
+	public static void main(String[] args){
 		Estruturas estrutura = new Estruturas();
-		estrutura.lerDoArquivo();
+		
+		try {
+			estrutura.ler();
+		} catch (Exception e) {
+			System.err.println(e);
+		}
+		
 		Launcher launcher = new Launcher(estrutura);
 
 	}

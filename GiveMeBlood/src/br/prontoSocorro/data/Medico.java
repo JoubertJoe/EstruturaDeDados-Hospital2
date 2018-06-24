@@ -6,14 +6,24 @@ public class Medico {
 	private String genero;
 	private String email;
 	private String especialidade;
+	private int id;
 
-	public Medico(String pnome, String psobrenome, String pgenero, String pcpf, String pemail, String pespecialidade) {
+	public Medico(int pid,String pnome, String psobrenome, String pgenero, String pemail, String pespecialidade) {
 		super();
 		this.nome = pnome;
 		this.sobrenome = psobrenome;
 		this.genero = pgenero;
 		this.email = pemail;
 		this.especialidade = pespecialidade;
+		this.id = pid;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getNome() {
@@ -59,7 +69,7 @@ public class Medico {
 	@Override
 	public String toString() {
 
-		return getNome() + "\t" + getSobrenome() + "\t" +getGenero() + "\t" +getEmail() + "\t" +getEspecialidade();
+		return getId() +"\t"+ getNome() + "\t" + getSobrenome() + "\t" +getGenero() + "\t" +getEmail() + "\t" +getEspecialidade();
 	}
 
 }

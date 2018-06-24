@@ -34,6 +34,10 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.io.FileNotFoundException;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -63,28 +67,40 @@ public class JanelaAdministracao extends JFrame {
 	private JRadioButton rdbtnLaranja;
 	private JPanel pnlVoltar;
 	private JButton btnVoltar;
+	private JButton btnCadastrar_1;
 
 	public JanelaAdministracao(Estruturas estruturas) {
 		setTitle("Give me Blood!");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 969, 587);
 		componentesAbaCadMedico();
 		componentesAbaCadPaciente();
 		acoes(estruturas);
 		this.setVisible(true);
+		this.addWindowListener(new WindowAdapter() {
+			public void WindowClosing(WindowEvent e) {
+				try {
+					estruturas.salvar();
+					JanelaAdministracao.this.dispose();
+				} catch (FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 
+			}
+		});
 	}
 
 	int getPrioridade() {
-		if (btgPrioridade.getSelection().equals(rdbtnAzul)) {
+		if (rdbtnAzul.isSelected()) {
 			return 0;
-		} else if (btgPrioridade.getSelection().equals(rdbtnVerde)) {
+		} else if (rdbtnVerde.isSelected()) {
 			return 1;
-		} else if (btgPrioridade.getSelection().equals(rdbtnAmarelo)) {
+		} else if (rdbtnAmarelo.isSelected()) {
 			return 2;
-		} else if (btgPrioridade.getSelection().equals(rdbtnLaranja)) {
+		} else if (rdbtnLaranja.isSelected()) {
 			return 3;
-		} else if (btgPrioridade.getSelection().equals(rdbtnVermelho)) {
+		} else if (rdbtnVermelho.isSelected()) {
 			return 4;
 		} else {
 			return 0;
@@ -96,11 +112,11 @@ public class JanelaAdministracao extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Medico novoMedico = new Medico(txtNomeDoMdico.getText(), txtSobrenomeDoMdico.getText(),
-						comboGeneroMedico.getSelectedItem().toString(), txtCpfPaciente.getText(),
-						txtEmailDoMedico.getText(), txtEspecialidadeDoMdico.getText());
+				int id = estruturas.getMedicos().size();
+				Medico novoMedico = new Medico(id, txtNomeDoMdico.getText(), txtSobrenomeDoMdico.getText(),
+						comboGeneroMedico.getSelectedItem().toString(), txtEmailDoMedico.getText(),
+						txtEspecialidadeDoMdico.getText());
 				estruturas.addCadastraMedico(novoMedico);
-				System.out.println(novoMedico.toString());
 
 			}
 		});
@@ -109,13 +125,31 @@ public class JanelaAdministracao extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				int id = estruturas.getCadastroPacientes().size();
 
-				Paciente novoPaciente = new Paciente(txtNomePaciente.getText(), txtPacienteSobrenome.getText(),
+				Paciente novoPaciente = new Paciente(id, txtNomePaciente.getText(), txtPacienteSobrenome.getText(),
 						comboGeneroPaciente.getSelectedItem().toString(), txtCpfPaciente.getText(),
 						txtEmailPaciente.getText(), getPrioridade());
 				estruturas.addPaciente(novoPaciente);
+				estruturas.addCadPaciente(novoPaciente);
+
 			}
 
+		});
+
+		btnCadastrar_1.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				int id = estruturas.getCadastroPacientes().size();
+
+				Paciente novoPaciente = new Paciente(id, txtNomePaciente.getText(), txtPacienteSobrenome.getText(),
+						comboGeneroPaciente.getSelectedItem().toString(), txtCpfPaciente.getText(),
+						txtEmailPaciente.getText(), 0);
+				estruturas.addCadPaciente(novoPaciente);
+
+			}
 		});
 
 		btnVoltar.addActionListener(new ActionListener() {
@@ -123,8 +157,14 @@ public class JanelaAdministracao extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				
+
 				Launcher launcher = new Launcher(estruturas);
+				try {
+					estruturas.salvar();
+				} catch (FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				JanelaAdministracao.this.dispose();
 			}
 		});
@@ -270,9 +310,9 @@ public class JanelaAdministracao extends JFrame {
 		tabbedPane.addTab("Cadastro de Clientes", null, panelCadastroClientes, null);
 		gbl_panelCadastroClientes = new GridBagLayout();
 		gbl_panelCadastroClientes.columnWidths = new int[] { 123, 209, 114, 81, 114, 0 };
-		gbl_panelCadastroClientes.rowHeights = new int[] { 19, 0, 0, 0, 0, 0, 0 };
+		gbl_panelCadastroClientes.rowHeights = new int[] { 19, 0, 0, 0, 0, 0, 0, 0 };
 		gbl_panelCadastroClientes.columnWeights = new double[] { 0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
-		gbl_panelCadastroClientes.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_panelCadastroClientes.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		panelCadastroClientes.setLayout(gbl_panelCadastroClientes);
 
 		lblNome_1 = new JLabel("Nome:");
@@ -375,7 +415,7 @@ public class JanelaAdministracao extends JFrame {
 		lblCondio = new JLabel("Condição:");
 		GridBagConstraints gbc_lblCondio = new GridBagConstraints();
 		gbc_lblCondio.anchor = GridBagConstraints.EAST;
-		gbc_lblCondio.insets = new Insets(0, 0, 0, 5);
+		gbc_lblCondio.insets = new Insets(0, 0, 5, 5);
 		gbc_lblCondio.gridx = 0;
 		gbc_lblCondio.gridy = 5;
 		panelCadastroClientes.add(lblCondio, gbc_lblCondio);
@@ -383,7 +423,7 @@ public class JanelaAdministracao extends JFrame {
 		pnlEmergencia = new JPanel();
 		gbc_pnlEmergencia = new GridBagConstraints();
 		gbc_pnlEmergencia.anchor = GridBagConstraints.WEST;
-		gbc_pnlEmergencia.insets = new Insets(0, 0, 0, 5);
+		gbc_pnlEmergencia.insets = new Insets(0, 0, 5, 5);
 		gbc_pnlEmergencia.fill = GridBagConstraints.VERTICAL;
 		gbc_pnlEmergencia.gridx = 1;
 		gbc_pnlEmergencia.gridy = 5;
@@ -420,13 +460,22 @@ public class JanelaAdministracao extends JFrame {
 		rdbtnVermelho.setForeground(Color.WHITE);
 		pnlEmergencia.add(rdbtnVermelho);
 
-		btnCadastrar = new JButton("Cadastrar");
+		btnCadastrar = new JButton("Cadastrar e Por na Fila");
 		gbc_btnCadastrar = new GridBagConstraints();
 		gbc_btnCadastrar.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnCadastrar.gridwidth = 2;
-		gbc_btnCadastrar.insets = new Insets(0, 0, 0, 5);
+		gbc_btnCadastrar.insets = new Insets(0, 0, 5, 5);
 		gbc_btnCadastrar.gridx = 2;
 		gbc_btnCadastrar.gridy = 5;
 		panelCadastroClientes.add(btnCadastrar, gbc_btnCadastrar);
+
+		btnCadastrar_1 = new JButton("Cadastrar");
+		GridBagConstraints gbc_btnCadastrar_1 = new GridBagConstraints();
+		gbc_btnCadastrar_1.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnCadastrar_1.gridwidth = 2;
+		gbc_btnCadastrar_1.insets = new Insets(0, 0, 0, 5);
+		gbc_btnCadastrar_1.gridx = 2;
+		gbc_btnCadastrar_1.gridy = 6;
+		panelCadastroClientes.add(btnCadastrar_1, gbc_btnCadastrar_1);
 	}
 }
